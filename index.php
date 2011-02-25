@@ -1,39 +1,63 @@
+<html>
+<head>
+<title>Agent Ransack Search</title>
+</head>
+<body>
 <?php
+
+	//Edit to your path to Agent Ransack exe.
+	$AGENTRANSACK_PATH = 'C:\Program Files\Mythicsoft\Agent Ransack\AgentRansack.exe';
+	$LOGFILEPATH = 'C:\\';
+	$list_html = '';
 	if (isset($_GET['Submit']))
 	{
-	include('agent_ransack.php');
+		include('agent_ransack.php');
 
-	$AR = new phpAgentRansack();
+		$AR = new phpAgentRansack();
 
 
-     $AR->AgentR_Path = 'C:\Program Files\Mythicsoft\Agent Ransack\AgentRansack.exe';
-	$AR->option_Directory = $_GET['rootsearch'];
-	 $AR->option_Search = $_GET['search'];
-	 $AR->option_SubFolders = $_GET['subdir'];
-	$AR->execute();
-	//echo $AR->FullCMD;
-	//echo $AR->Current_Output_File;
+     	$AR->AgentR_Path = $AGENTRANSACK_PATH;
+		$AR->option_Directory = $_GET['rootsearch'];
+	 	$AR->option_Search = $_GET['search'];
+	 	if (isset( $_GET['subdir']))
+	 	{
+	 		$AR->option_SubFolders = true;
+	 	}
+	 	else
+	 	{
+	 		$AR->option_SubFolders = false;
+	 	}
+		$AR->execute();
+
 	}
-	else if (isset($_GET['refresh']))
+	
+	if (isset($_GET['view']))
 	{
 	
+		if (isset($_GET['fn']))
+		{
 		$fn = $_GET['fn'];
-		$count = $_GET['refresh'] -1;
-		if ($count > 0)
-		{	
-			echo "<meta http-equiv=\"refresh\" content=\"5;url=index.php?refresh=$count&fn=$fn\">";
+		}
+		else
+		{
+			$fn = $AR->Current_Output_File;
 		}
 		$outputfile = file( "$fn");
-		echo "<table>";
+		$arraycount = count($outputfile);
+		$list_html = "
+		<h3>Results - $arraycount files</h3>
+		<a href='index.php?view=yes&fn=$fn'>Refresh Results</a><BR>;
+		<table cellpadding=2 border=1>";
 		foreach ($outputfile as $L)
 		{
 			$Line = explode("\t", $L);
-			echo "<TR><TD>$Line[0]</TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>\n";
+			$list_html .= "<TR><TD>$Line[0]</TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>\n";
 			//$L = str_replace('
 			//echo "<BR>$L	";
+			
 		}	
-				echo "</table>";
-	 exit;
+		$list_html .= "</table>";
+	 //exit;
 	}
 ?>
 
@@ -55,7 +79,7 @@
     </tr>
     <tr>
       <td><strong>Search Sub Directories </strong></td>
-      <td><input name="subdir" type="text" id="subdir" value="/s" size="50"></td>
+      <td><input name="subdir" type="checkbox" id="subdir" value="yes" size="50" ></td>
       <td>&nbsp;</td>
     </tr>
     <tr>
@@ -68,8 +92,14 @@
       <td><input name="rootoutput" type="text" id="rootoutput" value="c:\" size="50"></td>
       <td><input type="submit" name="Submit" value="Submit"></td>
     </tr>
+    <input type=hidden value=yes name=view>
   </table>
 
 </form>
 <p>&nbsp;</p>
-<iframe src="index.php?refresh=5&fn=<?php echo $AR->Current_Output_File ?>" width=800px height=600px></iframe>
+
+		<?php echo $list_html; ?>
+</body>
+</html>
+
+
