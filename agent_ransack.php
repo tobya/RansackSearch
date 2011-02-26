@@ -17,7 +17,6 @@ class phpAgentRansack
 	public $Current_Output_File = '';
 	public $FullCMD = '';
 	
-	
 	public $OutputFile = '';
 
     // method declaration
