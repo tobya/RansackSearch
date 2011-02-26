@@ -1,14 +1,15 @@
 <?php
+/***************************************************************************
+Name: phpRansack
+Description: Php Script to interface with AgentRansack.
+id:$id$
 
 
-
-
-
+****************************************************************************/
 class phpAgentRansack
 {
     // property declarations
     public $AgentR_Path = '';
-  //  public $AgentR_exe = 'AgentRansack.exe';
     public $root_OutputFile = 'c:\\';
 	public $option_SubFolders = '/s';
 	public $option_Directory = "c:\\";
@@ -21,28 +22,15 @@ class phpAgentRansack
 
     // method declaration
     public function execute() {
-	//$RansackPath = "C:\Program Files\Mythicsoft\Agent Ransack";
-	$OutputFileName = $this->getUniqueOutputFile();
-	$this->Current_Output_File= $this->root_OutputFile  . $OutputFileName;
-	/*$cmd = 	'"' . $this->AgentR_Path 
-	.  '" -o "c:\'
-	  . $OutputFileName
-	  . '" -d "' 
-	  . $this->option_Directory 
-					. '"' 
-					. ' -f "'
-					 . $this->option_Search 
-					 . '"' 
-					 . $this->option_SubFolders;*/
-	$cmd =  "  \"$this->AgentR_Path\" -o \"c:\\$OutputFileName\" -d \"$this->option_Directory\" -f \"$this->option_Search\" ";
-	//$cmd = 'c:\BCSSERVER\bcsstudents\oneoff\agent\agentransack.bat';
-	$this->FullCMD = $cmd;
-	echo $cmd;
-	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
-	$r = exec( '"' . $cmd . '"', $A, $RR);
-	echo $r;
-	print_R($A);
-	echo $RR;
+	
+    	$OutputFileName = $this->getUniqueOutputFile();
+    	$this->Current_Output_File= $this->root_OutputFile  . $OutputFileName;
+    
+    	$cmd =  "  \"$this->AgentR_Path\" -o \"$this->root_OutputFile$OutputFileName\" -d \"$this->option_Directory\" -f \"$this->option_Search\" ";
+    	$this->FullCMD = $cmd;
+    
+    	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
+    	$r = exec( '"' . $cmd . '"');
 
     }
     
