@@ -9,9 +9,9 @@ id:$id$
 class phpAgentRansack
 {
     // property declarations
-    public $AgentRansack_Path = '';
-    public $OutputDirectory = '';//'c:\\';
-	public $option_SearchSubFolders = true;
+    public $AgentRansack_Path = '';			//Where the AgentRansack.exe file lives.
+    public $OutputDirectory = '';			//Where output file should be written to.
+	public $option_SearchSubFolders = true;//Should the search include sub directories.  
 	public $SearchDirectory = "c:\\";
 	public $SearchString = '';
 	public $Current_Output_File = '';
