@@ -17,7 +17,7 @@
     		$AR->AgentRansack_Path = $AGENTRANSACK_PATH;
     		$AR->SearchDirectory = $_GET['rootsearch'];
     		$AR->SearchString = $_GET['search'];
-    		$AR->OutputDirectory = $_GET['rootoutput'];
+    		//$AR->OutputDirectory = $_GET['rootoutput'];
     		if (isset( $_GET['subdir']))
     		{
     			$AR->option_SearchSubFolders = true;
