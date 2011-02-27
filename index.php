@@ -8,11 +8,11 @@
 		$AGENTRANSACK_PATH = 'C:\Program Files (x86)\Mythicsoft\Agent Ransack\AgentRansack.exe';
 		$LOGFILEPATH = 'C:\\';
 		$list_html = '';
-		
+    	include('agent_ransack.php');
+    	$AR = new phpAgentRansack();		
 		if (isset($_GET['Submit']))
 		{
-    		include('agent_ransack.php');
-    		$AR = new phpAgentRansack();
+
     	  	    	
     		$AR->AgentRansack_Path = $AGENTRANSACK_PATH;
     		$AR->SearchDirectory = $_GET['rootsearch'];
@@ -40,7 +40,9 @@
 			{
 				$fn = $AR->Current_Output_File;
 			}
-    		$outputfile = file( "$fn");
+			
+    		$outputfile = $AR->getResults($fn);
+    		$outputfile = $AR->ReplacePath($AR->SearchDirectory, 'BASE');
     		$arraycount = count($outputfile);
     		$list_html = "<h3>Results - $arraycount files</h3>
     		<a href='index.php?view=yes&fn=$fn'>Refresh Results</a><BR>;

@@ -2,21 +2,20 @@
 /***************************************************************************
 Name: phpRansack
 Description: Php Script to interface with AgentRansack.
-id:$id$
 
 
 ****************************************************************************/
 class phpAgentRansack
 {
     // property declarations
-    public $AgentRansack_Path = '';			//Where the AgentRansack.exe file lives.
-    public $OutputDirectory = '';			//Where output file should be written to.
-	public $option_SearchSubFolders = true;//Should the search include sub directories.  
+	public $AgentRansack_Path = '';			//Where the AgentRansack.exe file lives.
+	public $OutputDirectory = '';			//Where output file should be written to.
+	public $option_SearchSubFolders = true;	//Should the search include sub directories.  
 	public $SearchDirectory = "c:\\";
 	public $SearchString = '';
 	public $Current_Output_File = '';
 	public $FullCMD = '';
-	
+	public $ResultArray = array();
 	public $OutputFile = '';
 
     // method declaration
@@ -84,6 +83,44 @@ class phpAgentRansack
     									)
     	    	
     					);
+    
+    }
+    
+    public function getResults($filename = false)
+    {
+
+			if (!$filename)
+			{
+				$fn = $this->Current_Output_File;
+			}
+			else
+			{
+				$this->Current_Output_File = $filename;
+				$fn = $filename;
+			}
+			
+
+    		$outputfile = file( "$fn");
+    		$this->ResultArray = $outputfile;
+    		return $outputfile; 
+    }
+    
+    public function ReplacePath($SourcePath, $ReplacementPath)
+    {
+    
+    	if (count($this->ResultArray) == 0)
+    	{
+    		getResults($this->Current_Output_File);
+    	}
+    
+    	foreach($this->ResultArray as $Result)
+    	{
+    		$Results[] = str_ireplace($SourcePath, $ReplacementPath, $Result);
+    	}
+    	
+    	$this->ResultArray = $Results;
+    	return $Results;
+    	
     
     }
 }
