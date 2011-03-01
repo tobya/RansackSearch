@@ -17,6 +17,7 @@ class phpAgentRansack
 	public $FullCMD = '';
 	public $ResultArray = array();
 	public $OutputFile = '';
+	public $WrapInQuotes = true;
 
     // method declaration
     public function execute() {
@@ -38,14 +39,22 @@ class phpAgentRansack
     		$cmd .= ' /s ';
     	}
     	$this->FullCMD = $cmd;
-    
+     echo $cmd;
     	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
+    	if ($this->WrapInQuotes)
+    	{
     	exec( '"' . $cmd . '"');   
+    	}
+    	else
+    	{
+    	exec($cmd);
+    	}
     }
     
-    private function getUniqueOutputFile()
+    public function getUniqueOutputFile()
     {
-    	return 'AgentRansack_Output_' . date('isz') . '.txt';
+    	//return 'AgentRansack_Output_' . date('isz') . '.txt';
+    	return 'AgentRansack_output.txt';
     }
     
     private function createConfigArray()
@@ -60,7 +69,7 @@ class phpAgentRansack
   		$Config['options'] = array('SearchSubDirs' => $this->option_SearchSubFolders,
   							'Regex' => false
   							);
-  	
+  		print_r($Config);
     	return $Config;
     	
     	
