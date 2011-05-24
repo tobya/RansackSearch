@@ -9,17 +9,17 @@
 		$LOGFILEPATH = 'C:\\';
 		$list_html = '';
     	include('agent_ransack.php');
-    	$AR = new phpAgentRansack();	
-    //	unlink($AR->Current_Output_File);	
+    	$AR = new phpAgentRansack();
+    //	unlink($AR->Current_Output_File);
 		if (isset($_GET['Submit']))
 		{
 
-    	  	    	
+
     		$AR->AgentRansack_Path = $AGENTRANSACK_PATH;
     		$AR->SearchDirectory = $_GET['rootsearch'];
     		$AR->SearchString = $_GET['search'];
     		$AR->OutputDirectory = $_GET['rootoutput'];
-    		$AR->WrapInQuotes = false;
+    		//$AR->WrapInQuotes = true;
     		//Please remove following line once this is done properly.
     	//	unlink($AR->OutputDirectory . $AR->getUniqueOutputFile());
     		if (isset( $_GET['subdir']))
@@ -33,7 +33,7 @@
     		echo $AR->FullCMD;
     		$AR->execute();
 		}
-		
+
 		if (isset($_GET['view']))
 		{
 			if (isset($_GET['fn']))
@@ -44,9 +44,9 @@
 			{
 				$fn = $AR->Current_Output_File;
 			}
-	
 
-			
+
+
     		$outputfile = $AR->getResults($fn);
     		//$outputfile = $AR->ReplacePath($AR->SearchDirectory, 'BASE');
     		$arraycount = count($outputfile);
@@ -56,25 +56,25 @@
 
 			foreach ($outputfile as $L)
 			{
-			
-			
-			
-			
+
+
+
+
 				$Line = explode("\t", $L);
-				
+
 $path_parts = pathinfo($Line[0]);
 
 //echo $path_parts['dirname'], "\n";
 //echo $path_parts['basename'], "\n";
 //echo $path_parts['extension'], "\n";
-//echo $path_parts['filename'], "\n";					
+//echo $path_parts['filename'], "\n";
 			//	$list_html .= "	<TR><TD>$Line[0]</TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>	\n";
 			//
-			
+
 			$list_html .= "	<TR><TD><a href='http://127.0.0.1:10001/core/downloadfile?filepath=". urlencode($Line[0]) . '&filename=' . urlencode($path_parts['filename'])."'>$Line[0]</a></TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>	\n";
-			
+
 //http://127.0.0.1:10001/core/downloadfile?filepath=C%3A%5CUsers%5CToby%5CDocuments%5CAptana+Studio+3+Workspace%5C.metadata%5C.plugins%5Ccom.aptana.portablegit.win32%5Clib%5Ctk8.5%5Cttk%5Ctreeview.tcl&filename=treeview.tcl
-			}	
+			}
 			$list_html .= "</table>	";
 
 		}

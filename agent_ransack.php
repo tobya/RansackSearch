@@ -10,7 +10,7 @@ class phpAgentRansack
     // property declarations
 	public $AgentRansack_Path = '';			//Where the AgentRansack.exe file lives.
 	public $OutputDirectory = '';			//Where output file should be written to.
-	public $option_SearchSubFolders = true;	//Should the search include sub directories.  
+	public $option_SearchSubFolders = true;	//Should the search include sub directories.
 	public $SearchDirectory = "c:\\";
 	public $SearchString = '';
 	public $Current_Output_File = '';
@@ -19,49 +19,65 @@ class phpAgentRansack
 	public $OutputFile = '';
 	public $WrapInQuotes = true;
 
+
+    function __construct()
+    {
+     $version = phpversion();
+
+     list($maj, $min, $point) = explode('.',$version);
+     //5.3 and above
+     if ($maj > 4)
+     {
+        if ($min > 2)
+        {
+          $this->WrapInQuotes = false;
+        }
+     }
+    }
+
     // method declaration
     public function execute() {
-	
+
 		$Config = $this->createConfigArray();
 		$this->execute_config($Config);
 
     }
-    
+
     public function execute_config($ConfigArray)
     {
      	//$OutputFileName = $this->getUniqueOutputFile();
-     	
+
     	$this->Current_Output_File= $ConfigArray['outputFile'];
-    
+
     	$cmd =  "  \"$ConfigArray[AgentRansack_exe]\" -o \"$ConfigArray[outputFile]\" -d \"$ConfigArray[rootSearchDir]\" -f \"$ConfigArray[searchString]\" ";
     	if ($ConfigArray['options']['SearchSubDirs'] )
     	{
     		$cmd .= ' /s ';
     	}
     	$this->FullCMD = $cmd;
-     echo $cmd;
+
     	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
     	if ($this->WrapInQuotes)
     	{
-    	exec( '"' . $cmd . '"');   
+    	exec( '"' . $cmd . '"');
     	}
     	else
     	{
     	exec($cmd);
     	}
     }
-    
+
     public function getUniqueOutputFile()
     {
     	//return 'AgentRansack_Output_' . date('isz') . '.txt';
     	return 'AgentRansack_output.txt';
     }
-    
+
     private function createConfigArray()
     {
     	//Create safe/string versions of options.
     	$Config = $this->EmptyConfig();
-    	
+
     	$Config['AgentRansack_exe'] = $this->AgentRansack_Path;
   		$Config['rootSearchDir'] = $this->SearchDirectory;
   		$Config['searchString'] = $this->SearchString;
@@ -71,18 +87,18 @@ class phpAgentRansack
   							);
   		print_r($Config);
     	return $Config;
-    	
-    	
-    	
-    	
-    
+
+
+
+
+
     }
-    
+
     private function EmptyConfig()
     {
-    
+
     	return array(
-    	
+
     				'AgentRansack_exe' => '',
     				'rootSearchDir' => 'c:\\',
     				'searchString' => '',
@@ -90,11 +106,11 @@ class phpAgentRansack
     				'options' => array('SearchSubDirs' => true,
     									'Regex' => false
     									)
-    	    	
+
     					);
-    
+
     }
-    
+
     public function getResults($filename = false)
     {
 
@@ -107,30 +123,30 @@ class phpAgentRansack
 				$this->Current_Output_File = $filename;
 				$fn = $filename;
 			}
-			
+
 
     		$outputfile = file( "$fn");
     		$this->ResultArray = $outputfile;
-    		return $outputfile; 
+    		return $outputfile;
     }
-    
+
     public function ReplacePath($SourcePath, $ReplacementPath)
     {
-    
+
     	if (count($this->ResultArray) == 0)
     	{
     		getResults($this->Current_Output_File);
     	}
-    
+
     	foreach($this->ResultArray as $Result)
     	{
     		$Results[] = str_ireplace($SourcePath, $ReplacementPath, $Result);
     	}
-    	
+
     	$this->ResultArray = $Results;
     	return $Results;
-    	
-    
+
+
     }
 }
 
