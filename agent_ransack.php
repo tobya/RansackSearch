@@ -5,22 +5,27 @@ Description: Php Script to interface with AgentRansack.
 
 
 ****************************************************************************/
+
+@include('ARConfig.php');
+
 class phpAgentRansack
 {
     // property declarations
 	public $AgentRansack_Path = '';			//Where the AgentRansack.exe file lives.
-	public $OutputDirectory = '';			//Where output file should be written to.
-	public $option_SearchSubFolders = true;	//Should the search include sub directories.
-	public $SearchDirectory = "c:\\";
+	public $OutputDirectory = 'c:\\temp\\';			//Where output file should be written to.
+	public $SearchSubFolders = true;	//Should the search include sub directories.
+	public $SearchDirectory = "";  //Root Directory to search - MUST BE SET BY USER.
 	public $SearchString = '';
 	public $Current_Output_File = '';
 	public $FullCMD = '';
 	public $ResultArray = array();
 	public $OutputFile = '';
 	public $WrapInQuotes = true;
+  public $Output_Raw = '';
+  public $Output_Array = array();
+  public $Errors = array();
 
-
-    function __construct()
+    function __construct($AR_Path = false)
     {
      $version = phpversion();
 
@@ -33,13 +38,21 @@ class phpAgentRansack
           $this->WrapInQuotes = false;
         }
      }
+     
+     if ($AR_Path != false)
+     {
+      $this->AgentRansack_Path = $AR_Path;
+     }
+     
+    
+    
     }
 
     // method declaration
     public function execute() {
 
 		$Config = $this->createConfigArray();
-		$this->execute_config($Config);
+		return $this->execute_config($Config);
 
     }
 
@@ -48,6 +61,12 @@ class phpAgentRansack
      	//$OutputFileName = $this->getUniqueOutputFile();
 
     	$this->Current_Output_File= $ConfigArray['outputFile'];
+    	
+    	if ($ConfigArray['rootSearchDir'] == '')
+    	{
+    	  $this->Errors[] = 'SearchDirectory must by set by User';
+    	  return false;
+    	}
 
     	$cmd =  "  \"$ConfigArray[AgentRansack_exe]\" -o \"$ConfigArray[outputFile]\" -d \"$ConfigArray[rootSearchDir]\" -f \"$ConfigArray[searchString]\" ";
     	if ($ConfigArray['options']['SearchSubDirs'] )
@@ -55,7 +74,7 @@ class phpAgentRansack
     		$cmd .= ' /s ';
     	}
     	$this->FullCMD = $cmd;
-
+      echo $this->FullCMD;
     	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
     	if ($this->WrapInQuotes)
     	{
@@ -65,6 +84,9 @@ class phpAgentRansack
     	{
     	exec($cmd);
     	}
+    	
+    	return $this->getResults();
+    	
     }
 
     public function getUniqueOutputFile()
@@ -79,13 +101,13 @@ class phpAgentRansack
     	$Config = $this->EmptyConfig();
 
     	$Config['AgentRansack_exe'] = $this->AgentRansack_Path;
-  		$Config['rootSearchDir'] = $this->SearchDirectory;
+  		$Config['rootSearchDir'] = $this->RemoveLastSlash($this->SearchDirectory);
   		$Config['searchString'] = $this->SearchString;
   		$Config['outputFile'] =  $this->OutputDirectory  .  $this->getUniqueOutputFile();
-  		$Config['options'] = array('SearchSubDirs' => $this->option_SearchSubFolders,
+  		$Config['options'] = array('SearchSubDirs' => $this->SearchSubFolders,
   							'Regex' => false
   							);
-  		print_r($Config);
+  		//print_r($Config);
     	return $Config;
 
 
@@ -125,9 +147,9 @@ class phpAgentRansack
 			}
 
 
-    		$outputfile = file( "$fn");
-    		$this->ResultArray = $outputfile;
-    		return $outputfile;
+    		$this->Output_Raw  = file( "$fn");
+    		$this->Output_Array = $this->OutputToArray();
+    		return  $this->Output_Array;
     }
 
     public function ReplacePath($SourcePath, $ReplacementPath)
@@ -147,6 +169,34 @@ class phpAgentRansack
     	return $Results;
 
 
+    }
+    
+    private function RemoveLastSlash($Dir)
+    {
+      if (substr($Dir,-1) == '\\')
+      {
+        return substr($Dir,0,-1);
+      }
+    }
+    
+    private function OutputToArray()
+    {
+			foreach ($this->Output_Raw as $Line)
+			{      
+				$LineArray = explode("\t", $Line);
+				
+				$path_parts = pathinfo($LineArray[0]);
+				$Item = array('FilePath' => $path_parts['dirname'] . '\\',
+				              'Filename' => $path_parts['basename'],
+				              'FileExt' => @$path_parts['extension'],
+				              'FileSize' => $LineArray[1],
+				              'FileTime' => $LineArray[2]);
+				
+
+        $Items[] = $Item;
+
+			}
+      return $Items;
     }
 }
 

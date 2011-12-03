@@ -30,8 +30,9 @@
     		{
     			$AR->option_SearchSubFolders = false;
     		}
-    		echo $AR->FullCMD;
+    	
     		$AR->execute();
+    		echo $AR->FullCMD;
 		}
 
 		if (isset($_GET['view']))
@@ -57,12 +58,9 @@
 			foreach ($outputfile as $L)
 			{
 
-
-
-
 				$Line = explode("\t", $L);
 
-$path_parts = pathinfo($Line[0]);
+        $path_parts = pathinfo($Line[0]);
 
 //echo $path_parts['dirname'], "\n";
 //echo $path_parts['basename'], "\n";
