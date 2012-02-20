@@ -1,13 +1,15 @@
-Ransack Search.
+h1. Ransack Search.
 
 A php script for interfacing with AgentRansack to list files on your server.
 
-Agent Ransack is available from http://www.mythicsoft.com/page.aspx?type=agentransack&page=home
+Agent Ransack is available from 
 
-Windows Only.
+http://www.mythicsoft.com/page.aspx?type=agentransack&page=home
 
-Not affiliated with Agent Ransack in any way.
-Agent Ransack is copyright MythicSoft.
+**Windows Only.**
+
+- Not affiliated with Agent Ransack in any way.
+- Agent Ransack is copyright MythicSoft.
 
 
 Why is it called Ransack Search.
