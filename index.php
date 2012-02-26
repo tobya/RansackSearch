@@ -19,13 +19,18 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 	</head>
 	<body>
 		<?php
-		//Edit to your path to Agent Ransack exe.
+		
+    /*******************
+    Setup: Change the path to AgentRansack and Logfilepath.
+    *******************/
 		$AGENTRANSACK_PATH = 'C:\Program Files (x86)\Mythicsoft\Agent Ransack\AgentRansack.exe';
 		$LOGFILEPATH = 'C:\\';
+		
+		
 		$list_html = '';
-    	include('agent_ransack.php');
-    	$AR = new phpAgentRansack();
-    //	unlink($AR->Current_Output_File);
+    include('agent_ransack.php');
+    $AR = new phpAgentRansack();
+    
 		if (isset($_GET['Submit']))
 		{
 
@@ -34,9 +39,8 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
     		$AR->SearchDirectory = $_GET['rootsearch'];
     		$AR->SearchString = $_GET['search'];
     		$AR->OutputDirectory = $_GET['rootoutput'];
-    		//$AR->WrapInQuotes = true;
-    		//Please remove following line once this is done properly.
-    	//	unlink($AR->OutputDirectory . $AR->getUniqueOutputFile());
+
+
     		if (isset( $_GET['subdir']))
     		{
     			$AR->option_SearchSubFolders = true;
@@ -47,7 +51,8 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
     		}
     	
     		$AR->execute();
-    		echo $AR->FullCMD;
+    		//Uncomment to see generated command string.
+    		//echo $AR->FullCMD;
 		}
 
 		if (isset($_GET['view']))
@@ -63,36 +68,31 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 
 
-    		$outputfile = $AR->getResults($fn);
-    		//$outputfile = $AR->ReplacePath($AR->SearchDirectory, 'BASE');
-    		$arraycount = count($outputfile);
-    		$list_html = "<h3>Results - $arraycount files</h3>
-    		<a href='index.php?view=yes&fn=$fn'>Refresh Results</a><BR>;
-    		<table cellpadding=2 border=1>";
+     $outputfile = $AR->getResults($fn);
+     $arraycount = count($outputfile);
+     $list_html = "<h3>Results - $arraycount files</h3>
+    		              <a href='index.php?view=yes&fn=$fn'>Refresh Results</a><BR>;
+    		              <table cellpadding=2 border=1>";
 
-			foreach ($outputfile as $L)
-			{
+		 foreach ($outputfile as $L)
+		 {
 
 				$Line = explode("\t", $L);
 
         $path_parts = pathinfo($Line[0]);
 
-//echo $path_parts['dirname'], "\n";
-//echo $path_parts['basename'], "\n";
-//echo $path_parts['extension'], "\n";
-//echo $path_parts['filename'], "\n";
-			//	$list_html .= "	<TR><TD>$Line[0]</TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>	\n";
-			//
 
-			$list_html .= "	<TR><TD><a href='http://127.0.0.1:10001/core/downloadfile?filepath=". urlencode($Line[0]) . '&filename=' . urlencode($path_parts['filename'])."'>$Line[0]</a></TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>	\n";
+  			$list_html .= "	<TR><TD>$Line[0]</TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>	\n";
 
-//http://127.0.0.1:10001/core/downloadfile?filepath=C%3A%5CUsers%5CToby%5CDocuments%5CAptana+Studio+3+Workspace%5C.metadata%5C.plugins%5Ccom.aptana.portablegit.win32%5Clib%5Ctk8.5%5Cttk%5Ctreeview.tcl&filename=treeview.tcl
+
 			}
 			$list_html .= "</table>	";
 
 		}
-		?>
-		<h2>Agent Ransack </h2>
+		
+?>
+		<h2>Ransack Search </h2>
+		<h5>Using the Amazing Agent Ransack</h5>
 		<form name="form1" method="get" action="index.php">
 			<table width="90%"  border="1" cellspacing="2" cellpadding="2">
 				<tr>
