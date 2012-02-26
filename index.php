@@ -34,7 +34,6 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 		if (isset($_GET['Submit']))
 		{
 
-
     		$AR->AgentRansack_Path = $AGENTRANSACK_PATH;
     		$AR->SearchDirectory = $_GET['rootsearch'];
     		$AR->SearchString = $_GET['search'];
@@ -52,7 +51,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
     	
     		$AR->execute();
     		//Uncomment to see generated command string.
-    		//echo $AR->FullCMD;
+    		echo $AR->FullCMD;
 		}
 
 		if (isset($_GET['view']))
@@ -68,21 +67,22 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 
 
-     $outputfile = $AR->getResults($fn);
-     $arraycount = count($outputfile);
-     $list_html = "<h3>Results - $arraycount files</h3>
-    		              <a href='index.php?view=yes&fn=$fn'>Refresh Results</a><BR>;
+     $outputResults = $AR->getResults($fn);
+     $arraycount = count($outputResults);
+     $list_html = "<h3>Results - $arraycount files</h3>  		              
     		              <table cellpadding=2 border=1>";
 
-		 foreach ($outputfile as $L)
+		 foreach ($outputResults as $Line)
 		 {
-
-				$Line = explode("\t", $L);
-
-        $path_parts = pathinfo($Line[0]);
-
-
-  			$list_html .= "	<TR><TD>$Line[0]</TD><TD>$Line[1]</TD><TD>$Line[2]</TD></tr>	\n";
+		    //echo '-----------------------<P>';
+        //print_R($L);
+        //$Line = $L;
+				//$Line = explode("\t", $L);
+      //  echo 'line:' ;  print_R($Line);
+        //$path_parts = pathinfo($Line[0]);
+		    //echo '<P>-----------------------<P>';        
+// [FilePath] => D:\development\CIFOnline\depot\websites\online\cookingisfun.ie\live\ [Filename] => index2.php [FileExt] => php [FileSize] => 9 KB [FileTime] => 05/10/2011 16:23:02 )
+  			$list_html .= "	<TR><TD>$Line[FilePath]$Line[Filename]</TD><TD>$Line[FileTime]</TD><TD>-</TD></tr>	\n";
 
 
 			}
@@ -99,7 +99,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 					<th width="27%" scope="col"><strong>Search For Files like (* ok) </strong></th>
 					<th width="38%" scope="col">
 						<div align="left">
-							<input name="search" type="text" id="search" size="50">
+							<input name="search" type="text" id="search" size="50" value="<?php echo $_GET['search']; ?>">
 						</div>
 					</th>
 					<th width="35%" scope="col">&nbsp;</th>

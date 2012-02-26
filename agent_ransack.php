@@ -63,9 +63,10 @@ class phpAgentRansack
 
     // method declaration
     public function execute() {
-
+    echo 'in execute';
 		$Config = $this->createConfigArray();
 		return $this->execute_config($Config);
+		
 
     }
 
@@ -87,15 +88,17 @@ class phpAgentRansack
     		$cmd .= ' /s ';
     	}
     	$this->FullCMD = $cmd;
-      //echo $this->FullCMD;
+      echo $this->FullCMD;
+      echo $cmd;
+      
     	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
     	if ($this->WrapInQuotes)
     	{
-    	exec( '"' . $cmd . '"');
+    	  exec( '"' . $cmd . '"');
     	}
     	else
     	{
-    	exec($cmd);
+    	  exec($cmd);
     	}
     	
     	return $this->getResults();
@@ -189,6 +192,10 @@ class phpAgentRansack
       if (substr($Dir,-1) == '\\')
       {
         return substr($Dir,0,-1);
+      }
+      else
+      {
+        return $Dir;
       }
     }
     
