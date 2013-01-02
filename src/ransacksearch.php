@@ -13,13 +13,13 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMA
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************/
 /***************************************************************************
-Name: phpAgentRansack
+Name: RansackSearch
 Description: Php Script to interface with AgentRansack.
 Source: http://github.com/tobya/RansackSearch
 ****************************************************************************/
 
 
-class phpAgentRansack
+class RansackSearch
 {
     // property declarations
 	public $AgentRansack_Path = '';			        //Where the AgentRansack.exe file lives.

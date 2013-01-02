@@ -29,8 +29,8 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 		
 		
 		$list_html = '';
-    include('..\src\agent_ransack.php');
-    $AR = new phpAgentRansack();
+    include('..\src\RansackSearch.php');
+    $AR = new RansackSearch();
     
 		if (isset($_GET['Submit']))
 		{
@@ -100,7 +100,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 					<th width="27%" scope="col"><strong>Search For Files like (* ok) </strong></th>
 					<th width="38%" scope="col">
 						<div align="left">
-							<input name="search" type="text" id="search" size="50" value="<?php echo $_GET['search']; ?>">
+							<input name="search" type="text" id="search" size="50" value="<?php echo @$_GET['search']; ?>">
 						</div>
 					</th>
 					<th width="35%" scope="col">&nbsp;</th>

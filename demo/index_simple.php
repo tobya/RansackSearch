@@ -20,14 +20,14 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 <body>
 <?php
 
-   include('..\src\agent_ransack.php');
+   include('..\src\RansackSearch.php');
 
     //Setup Constants
     $AGENTRANSACK_PATH = 'C:/Program Files/Mythicsoft/Agent Ransack/AgentRansack.exe';
  		$RootSearchPath = 'D:\development\\';
 
  		
- 		$AgentR = new phpAgentRansack($AGENTRANSACK_PATH);
+ 		$AgentR = new RansackSearch($AGENTRANSACK_PATH);
  		
  		$AgentR->SearchDirectory = $RootSearchPath;
  		$AgentR->SearchString =  @$_GET['search'] ?  $_GET['search']:  '.php'  ;
