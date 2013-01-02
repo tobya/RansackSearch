@@ -13,13 +13,11 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMA
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************/
 /***************************************************************************
-Name: phpRansack
+Name: phpAgentRansack
 Description: Php Script to interface with AgentRansack.
-
-
+Source: http://github.com/tobya/RansackSearch
 ****************************************************************************/
 
-@include('ARConfig.php');
 
 class phpAgentRansack
 {
@@ -82,7 +80,7 @@ class phpAgentRansack
     	  return false;
     	}
 
-    	$cmd =  "  \"$ConfigArray[AgentRansack_exe]\" -o \"$ConfigArray[outputFile]\" -d \"$ConfigArray[rootSearchDir]\" -f \"$ConfigArray[searchString]\" ";
+    	$cmd =  "  \"$ConfigArray[AgentRansack_exe]\" -o \"$ConfigArray[outputFile]\" -d \"$ConfigArray[rootSearchDir]\" -f \"$ConfigArray[searchString]\" -ofb  ";
     	if ($ConfigArray['options']['SearchSubDirs'] )
     	{
     		$cmd .= ' /s ';
@@ -120,16 +118,10 @@ class phpAgentRansack
   		$Config['rootSearchDir'] = $this->RemoveLastSlash($this->SearchDirectory);
   		$Config['searchString'] = $this->SearchString;
   		$Config['outputFile'] =  $this->OutputDirectory  .  $this->getUniqueOutputFile();
-  		$Config['options'] = array('SearchSubDirs' => $this->SearchSubFolders,
-  							'Regex' => false
-  							);
-  		//print_r($Config);
+  		$Config['options'] = array( 'SearchSubDirs' => $this->SearchSubFolders,
+  							                  'Regex' => false
+  							                );
     	return $Config;
-
-
-
-
-
     }
 
     private function EmptyConfig()
@@ -189,7 +181,7 @@ class phpAgentRansack
     
     private function RemoveLastSlash($Dir)
     {
-      if (substr($Dir,-1) == '\\')
+      if (substr($Dir,-1) == DIRECTORY_SEPARATOR)
       {
         return substr($Dir,0,-1);
       }
@@ -201,8 +193,13 @@ class phpAgentRansack
     
     private function OutputToArray()
     {
+    
+      
+    
 			foreach ($this->Output_Raw as $Line)
 			{      
+			  //echo $Line;
+			  
 				$LineArray = explode("\t", $Line);
 				
 				$path_parts = pathinfo($LineArray[0]);
