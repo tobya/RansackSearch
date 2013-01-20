@@ -1,7 +1,8 @@
 Ransack Search.
 ----------------
 
-A php script for interfacing with AgentRansack to list files on your server.
+A php script for interfacing with AgentRansack to list files on your server.  This PHP Wrapper for Agent Ransack works on any Windows box with Agent Ransack installed.
+
 
 Agent Ransack is available from 
 
