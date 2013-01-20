@@ -25,7 +25,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
     Setup: Change the path to AgentRansack and Logfilepath.
     *******************/
 		$AGENTRANSACK_PATH = 'C:/Program Files/Mythicsoft/Agent Ransack/AgentRansack.exe';
-		$LOGFILEPATH = 'C:\\';
+		//$LOGFILEPATH = 'C:\\';
 		
 		
 		$list_html = '';
@@ -37,8 +37,9 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
     		$AR->AgentRansack_Path = $AGENTRANSACK_PATH;
     		$AR->SearchDirectory = $_GET['rootsearch'];
-    		$AR->SearchString = $_GET['search'];
-    		$AR->OutputDirectory = $_GET['rootoutput'];
+    		$AR->SearchString = $_GET['filesearch'];
+        $AR->SearchContentString = $_GET['contentsearch'];
+
 
 
     		if (isset( $_GET['subdir']))
@@ -75,14 +76,6 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 		 foreach ($outputResults as $Line)
 		 {
-		    //echo '-----------------------<P>';
-        //print_R($L);
-        //$Line = $L;
-				//$Line = explode("\t", $L);
-      //  echo 'line:' ;  print_R($Line);
-        //$path_parts = pathinfo($Line[0]);
-		    //echo '<P>-----------------------<P>';        
-// [FilePath] => D:\development\CIFOnline\depot\websites\online\cookingisfun.ie\live\ [Filename] => index2.php [FileExt] => php [FileSize] => 9 KB [FileTime] => 05/10/2011 16:23:02 )
   			$list_html .= "	<TR><TD>$Line[FilePath]$Line[Filename]</TD><TD>$Line[FileTime]</TD><TD>-</TD></tr>	\n";
 
 
@@ -100,10 +93,12 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 					<th width="27%" scope="col"><strong>Search For Files like (* ok) </strong></th>
 					<th width="38%" scope="col">
 						<div align="left">
-							<input name="search" type="text" id="search" size="50" value="<?php echo @$_GET['search']; ?>">
+							<input name="filesearch" type="text" id="filesearch" size="50" value="<?php echo @$_GET['filesearch']; ?>">
 						</div>
 					</th>
-					<th width="35%" scope="col">&nbsp;</th>
+					<th width="35%" scope="col"><div align="left">
+            <input name="contentsearch" type="text" id="contentsearch" size="50" value="<?php echo @$_GET['contentsearch']; ?>">
+          </div>&nbsp;</th>
 				</tr>
 				<tr>
 					<td><strong>Begin Search in this directory </strong></td>
@@ -118,16 +113,13 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 				<tr>
 					<td><strong>Display Results Below </strong></td>
 					<td><input name="checkbox" type="checkbox" value="checkbox" checked></td>
-					<td>&nbsp;</td>
+					<td><input type="submit" name="Submit" value="Submit">&nbsp;</td>
 				</tr>
-				<tr>
-					<td><strong>Directory to Place Result File </strong></td>
-					<td><input name="rootoutput" type="text" id="rootoutput" value="c:\temp\" size="50"></td>
-					<td><input type="submit" name="Submit" value="Submit"></td>
-				</tr>
+
 				<input type=hidden value=yes name=view>
 			</table>
 		</form>
+    <a href="index.php"> Clear</a>
 		<p>&nbsp;</p>
 		<?php echo $list_html; ?>
 	</body>

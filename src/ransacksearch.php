@@ -23,10 +23,11 @@ class RansackSearch
 {
     // property declarations
 	public $AgentRansack_Path = '';			        //Where the AgentRansack.exe file lives.
-	public $OutputDirectory = 'c:\\temp\\';			//Where output file should be written to.
+	public $OutputDirectory = '';			//Where output file should be written to.
 	public $SearchSubFolders = true;	          //Should the search include sub directories.
 	public $SearchDirectory = "";               //Root Directory to search - MUST BE SET BY USER.
 	public $SearchString = '';                  //File Match String
+  public $SearchContentString = '';           //Content match string.
 	public $Current_Output_File = '';
 	public $FullCMD = '';
 	public $ResultArray = array();
@@ -35,9 +36,12 @@ class RansackSearch
   public $Output_Raw = '';
   public $Output_Array = array();
   public $Errors = array();
+  public $SessionID = '';
 
     function __construct($AR_Path = false)
     {
+
+     $this->OutputDirectory = dirname(__FILE__) . '\\';  //use script dir for output.
      $version = phpversion();
 
      list($maj, $min, $point) = explode('.',$version);
@@ -81,13 +85,14 @@ class RansackSearch
     	}
 
     	$cmd =  "  \"$ConfigArray[AgentRansack_exe]\" -o \"$ConfigArray[outputFile]\" -d \"$ConfigArray[rootSearchDir]\" -f \"$ConfigArray[searchString]\" -ofb  ";
+      $cmd .=  " -c \"$ConfigArray[SearchContentString]\"  ";
     	if ($ConfigArray['options']['SearchSubDirs'] )
     	{
-    		$cmd .= ' /s ';
+    		$cmd .= ' -s ';
     	}
     	$this->FullCMD = $cmd;
       echo $this->FullCMD;
-      echo $cmd;
+     // echo $cmd;
       
     	//Wrap entire command in " as per http://www.php.net/manual/en/function.exec.php#101579
     	if ($this->WrapInQuotes)
@@ -106,7 +111,8 @@ class RansackSearch
     public function getUniqueOutputFile()
     {
     	//return 'AgentRansack_Output_' . date('isz') . '.txt';
-    	return 'AgentRansack_output.txt';
+      $Sess = $this->getSessionID();
+    	return "AgentRansack_output_$Sess.txt";
     }
 
     private function createConfigArray()
@@ -117,6 +123,7 @@ class RansackSearch
     	$Config['AgentRansack_exe'] = $this->AgentRansack_Path;
   		$Config['rootSearchDir'] = $this->RemoveLastSlash($this->SearchDirectory);
   		$Config['searchString'] = $this->SearchString;
+      $Config['SearchContentString'] = $this->SearchContentString;
   		$Config['outputFile'] =  $this->OutputDirectory  .  $this->getUniqueOutputFile();
   		$Config['options'] = array( 'SearchSubDirs' => $this->SearchSubFolders,
   							                  'Regex' => false
@@ -133,7 +140,8 @@ class RansackSearch
     				'rootSearchDir' => 'c:\\',
     				'searchString' => '',
     				'outputFile' => '',
-    				'options' => array('SearchSubDirs' => true,
+            'SearchContentString' => '',
+            'options' => array('SearchSubDirs' => true,
     									'Regex' => false
     									)
 
@@ -190,6 +198,19 @@ class RansackSearch
         return $Dir;
       }
     }
+
+
+    public function getSessionID()
+    {
+      if ($this->SessionID > ''){
+        return $this->SessionID;
+      }
+      else{
+        session_start();
+        $this->SessionID = session_id();
+        return $this->SessionID;
+      }
+    }
     
     private function OutputToArray()
     {
@@ -201,7 +222,9 @@ class RansackSearch
 			  //echo $Line;
 			  
 				$LineArray = explode("\t", $Line);
-				
+       // echo $LineArray[0] . "\n<BR>";
+        if (!is_numeric(trim($LineArray[0]))){ //if numeric line number so ignore.
+          if (trim($LineArray[0]) <> ''){ //Empty Line.
 				$path_parts = pathinfo($LineArray[0]);
 				$Item = array('FilePath' => $path_parts['dirname'] . '\\',
 				              'Filename' => $path_parts['basename'],
@@ -211,7 +234,7 @@ class RansackSearch
 				
 
         $Items[] = $Item;
-
+        }}
 			}
       return $Items;
     }
